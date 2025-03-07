@@ -80,4 +80,14 @@ public class UserService {
         return entity.get().toDomain();
     }
 
+    public void delete(Long id) throws Exception {
+        Optional<UserEntity> entity = repository.findById(id);
+
+        if (entity.isEmpty()) {
+            throw new Exception();
+        }
+
+        repository.delete(entity.get());
+    }
+
 }

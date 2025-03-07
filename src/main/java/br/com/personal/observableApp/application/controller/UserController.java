@@ -5,6 +5,7 @@ import br.com.personal.observableApp.application.dto.UserResponse;
 import br.com.personal.observableApp.domain.entity.User;
 import br.com.personal.observableApp.domain.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,5 +63,13 @@ public class UserController {
             @RequestBody UserRequest body
     ) {
         return ResponseEntity.ok(service.replaceUser(body, id).toResponse());
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> delete(
+            @PathVariable Long id
+    ) throws Exception {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
