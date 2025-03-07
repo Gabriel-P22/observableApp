@@ -1,18 +1,63 @@
 version: '3.8'
 
+networks:
+  database:
+    internal: true
+  api:
+    internal: true
+  monit:
+  proxy:
+
 services:
   postgres:
     image: postgres:15
     container_name: postgres_db
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: observableApp
     ports:
       - "5432:5432"
+    expose:
+      - 5432
+    networks:
+      - database
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  observable-app-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: observable-app-api
+    container_name: observable-app-api
+    restart: unless-stopped
+    networks:
+      - api
+      - database
+    depends_on:
+      - postgres
+    healthcheck:
+      test: "curl -sS http://app-forum-api:8080/actuator/health"
+      interval: 1s
+      timeout: 30s
+      retries: 60
+
+  proxy-observable-app-api:
+    image: nginx
+    container_name: proxy-observable-app-api
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/proxy.conf:/etc/nginx/conf.d/proxy.conf
+    ports:
+      - 80:80
+    networks:
+      - proxy
+      - api
+    depends_on:
+      - observable-app-api
 
   prometheus-observable-app:
     image: prom/prometheus:latest
@@ -29,8 +74,24 @@ services:
       - '--web.enable-lifecycle'
     ports:
       - 9090:9090
-
-
+    networks:
+      - monit
+      - api
+    depends_on:
+      - proxy-observable-app-api
     user: root
+
+  grafana-observable-app:
+    image: grafana/grafana
+    container_name: grafana-observable-app
+    volumes:
+      - ./grafana:/var/lib/grafana
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    networks:
+      - monit
+    user: root
+
 volumes:
   postgres_data:

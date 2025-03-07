@@ -2,7 +2,7 @@ spring:
   application:
     name: observableApp
   datasource:
-    url: jdbc:postgresql://localhost:5432/observableApp
+    url: jdbc:postgresql://postgres:5432/observableApp
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -19,7 +19,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "prometheus,health"
+        include: "prometheus,health,metrics"
   endpoint:
     health:
       show-details: always
@@ -33,6 +33,15 @@ management:
     ping:
       enabled: true
   metrics:
+    tags:
+      application: observableApp
+    enable:
+      jvm: true
     export:
       prometheus:
         enabled: true
+      distribution:
+        sla:
+          http:
+            server:
+              requests: 50ms, 100ms, 200ms, 300ms
