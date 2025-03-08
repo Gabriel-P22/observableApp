@@ -2,16 +2,16 @@ version: '3.8'
 
 networks:
   database:
-    internal: true
+    internal: false
   api:
-    internal: true
+    internal: false
   monit:
   proxy:
 
 services:
   postgres:
     image: postgres:15
-    container_name: postgres_db
+    container_name: postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -28,7 +28,7 @@ services:
 
   observable-app-api:
     build:
-      context: .
+      context: ./
       dockerfile: Dockerfile
     image: observable-app-api
     container_name: observable-app-api
@@ -38,6 +38,12 @@ services:
       - database
     depends_on:
       - postgres
+    environment:
+      DATABASE_URL: 123
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "8080:8080"
     healthcheck:
       test: "curl -sS http://app-forum-api:8080/actuator/health"
       interval: 1s
