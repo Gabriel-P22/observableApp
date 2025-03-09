@@ -36,12 +36,15 @@ management:
     tags:
       application: observable-app
     enable:
+      all: true
       jvm: true
+    distribution:
+      percentiles:
+        http.server.requests: 0.5, 0.75, 0.9, 0.95, 0.99
+      percentiles-histogram:
+        http.server.requests: true
+      sla:
+        http.server.requests: 50ms, 100ms, 200ms, 300ms, 500ms, 1s
     export:
       prometheus:
         enabled: true
-      distribution:
-        sla:
-          http:
-            server:
-              requests: 50ms, 100ms, 200ms, 300ms
