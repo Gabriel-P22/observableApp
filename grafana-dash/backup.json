@@ -721,7 +721,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 7,
         "w": 24,
         "x": 0,
         "y": 14
@@ -736,7 +736,7 @@
             "lastNotNull"
           ],
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "showLegend": true
         },
         "tooltip": {
@@ -772,210 +772,217 @@
       "type": "timeseries"
     },
     {
-      "collapsed": true,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "aef58dvq242kge"
+      },
+      "description": "Duração media das request no ultimo minuto",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 1,
+        "h": 8,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 21
       },
-      "id": 11,
-      "panels": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "aef58dvq242kge"
-          },
-          "description": "conexões em timeout",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-green"
-                  },
-                  {
-                    "color": "#EAB839",
-                    "value": 2
-                  },
-                  {
-                    "color": "dark-red",
-                    "value": 5
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 6,
-            "x": 0,
-            "y": 16
-          },
-          "id": 13,
-          "options": {
-            "colorMode": "value",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "percentChangeColorMode": "standard",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showPercentChange": false,
-            "textMode": "auto",
-            "wideLayout": true
-          },
-          "pluginVersion": "11.5.2",
-          "targets": [
-            {
-              "editorMode": "code",
-              "expr": "increase(hikaricp_connections_timeout_total{application=\"$application\", instance=\"$instance\", job=\"observable-app\", pool=\"$pool\"}[1m])",
-              "legendFormat": "__auto",
-              "range": true,
-              "refId": "A"
-            }
+      "id": 21,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean",
+            "lastNotNull"
           ],
-          "title": "DB CONNECTION TIMEOUT",
-          "type": "stat"
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "rate(http_server_requests_seconds_sum{application=\"$application\", instance=\"$instance\", job=\"observable-app\", uri!=\"/actuator/prometheus\", status=\"200\", uri=\"/user\"}[1m]) / http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", job=\"observable-app\", uri!=\"/actuator/prometheus\", status=\"200\", uri=\"/user\"}",
+          "legendFormat": "{{uri}} {{method}} {{status}}",
+          "range": true,
+          "refId": "A"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "aef58dvq242kge"
           },
-          "description": "Estado das conexões com o databse",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "opacity",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineStyle": {
-                  "fill": "solid"
-                },
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 9,
-            "x": 6,
-            "y": 16
-          },
-          "id": 12,
-          "options": {
-            "legend": {
-              "calcs": [
-                "min",
-                "max",
-                "lastNotNull"
-              ],
-              "displayMode": "table",
-              "placement": "right",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "11.5.2",
-          "targets": [
-            {
-              "editorMode": "code",
-              "expr": "hikaricp_connections_active{ application=\"$application\", instance=\"$instance\", job=\"observable-app\", pool=\"$pool\"}",
-              "legendFormat": "active",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "aef58dvq242kge"
-              },
-              "editorMode": "code",
-              "expr": "hikaricp_connections_idle{ application=\"$application\", instance=\"$instance\", job=\"observable-app\", pool=\"$pool\"}",
-              "hide": false,
-              "instant": false,
-              "legendFormat": "idle",
-              "range": true,
-              "refId": "B"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "aef58dvq242kge"
-              },
-              "editorMode": "code",
-              "expr": "hikaricp_connections_pending{ application=\"$application\", instance=\"$instance\", job=\"observable-app\", pool=\"$pool\"}",
-              "hide": false,
-              "instant": false,
-              "legendFormat": "pending",
-              "range": true,
-              "refId": "C"
-            }
-          ],
-          "title": "CONNECTION STATE",
-          "type": "timeseries"
+          "editorMode": "code",
+          "expr": "rate(http_server_requests_seconds_sum{application=\"$application\", instance=\"$instance\", job=\"observable-app\", uri!=\"/actuator/prometheus\", status=\"200\", uri=\"/user/{id}\"}[1m]) / http_server_requests_seconds_count{application=\"$application\", instance=\"$instance\", job=\"observable-app\", uri!=\"/actuator/prometheus\", status=\"200\", uri=\"/user/{id}\"}",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "{{uri}} {{method}} {{status}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "DATABASE",
-      "type": "row"
+      "title": "AVERAGE REQUEST DURATION",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "aef58dvq242kge"
+      },
+      "description": "Duração maxima de uma requisição",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "arcsec"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "http_server_requests_seconds_max{application=\"$application\", instance=\"$instance\", job=\"observable-app\", status=\"200\", uri!~\"/actuator/.*|/prometheus.*\"}",
+          "legendFormat": "{{uri}} {{method}} {{status}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "MAX REQUEST DURATION",
+      "type": "timeseries"
     },
     {
       "collapsed": true,
@@ -983,7 +990,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 37
       },
       "id": 3,
       "panels": [
@@ -1555,6 +1562,212 @@
       ],
       "title": "API BASIC",
       "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 38
+      },
+      "id": 11,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "aef58dvq242kge"
+          },
+          "description": "conexões em timeout",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "dark-green"
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 2
+                  },
+                  {
+                    "color": "dark-red",
+                    "value": 5
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 6,
+            "x": 0,
+            "y": 16
+          },
+          "id": 13,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.5.2",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "increase(hikaricp_connections_timeout_total{application=\"$application\", instance=\"$instance\", job=\"observable-app\", pool=\"$pool\"}[1m])",
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "DB CONNECTION TIMEOUT",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "aef58dvq242kge"
+          },
+          "description": "Estado das conexões com o databse",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 9,
+            "x": 6,
+            "y": 16
+          },
+          "id": 12,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "max",
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.5.2",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "hikaricp_connections_active{ application=\"$application\", instance=\"$instance\", job=\"observable-app\", pool=\"$pool\"}",
+              "legendFormat": "active",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "aef58dvq242kge"
+              },
+              "editorMode": "code",
+              "expr": "hikaricp_connections_idle{ application=\"$application\", instance=\"$instance\", job=\"observable-app\", pool=\"$pool\"}",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "idle",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "aef58dvq242kge"
+              },
+              "editorMode": "code",
+              "expr": "hikaricp_connections_pending{ application=\"$application\", instance=\"$instance\", job=\"observable-app\", pool=\"$pool\"}",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "pending",
+              "range": true,
+              "refId": "C"
+            }
+          ],
+          "title": "CONNECTION STATE",
+          "type": "timeseries"
+        }
+      ],
+      "title": "DATABASE",
+      "type": "row"
     }
   ],
   "preload": false,
@@ -1626,6 +1839,6 @@
   "timezone": "browser",
   "title": "dash-observable-app",
   "uid": "cef58xtk9n4lca",
-  "version": 36,
+  "version": 41,
   "weekStart": ""
 }
