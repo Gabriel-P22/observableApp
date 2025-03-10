@@ -2,7 +2,6 @@ package br.com.personal.observableApp.application.controller;
 
 import br.com.personal.observableApp.application.dto.UserRequest;
 import br.com.personal.observableApp.application.dto.UserResponse;
-import br.com.personal.observableApp.domain.entity.User;
 import br.com.personal.observableApp.domain.service.UserService;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -46,13 +45,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<UserResponse> getUserById(@PathVariable Long id) throws Exception {
+    ResponseEntity<UserResponse> getUserById(@PathVariable String id) throws Exception {
         return ResponseEntity.ok(service.getUserById(id));
     }
 
     @PatchMapping("/{id}")
     ResponseEntity<UserResponse> updateUser(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody UserRequest body
     ) {
         var user = service.updateUser(body, id);
@@ -61,7 +60,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     ResponseEntity<UserResponse> replaceUser(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody UserRequest body
     ) {
         var user = service.replaceUser(body, id);
@@ -70,7 +69,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(
-            @PathVariable Long id
+            @PathVariable String id
     ) throws Exception {
         service.delete(id);
         return ResponseEntity.noContent().build();

@@ -67,14 +67,14 @@ public class UserService {
         return entityList;
     }
 
-    public UserResponse getUserById(Long id) {
+    public UserResponse getUserById(String id) {
         UserEntity entity = repository.findById(id).orElseThrow();
         userFindWithSuccess.increment();
 
         return entity.toDomain().toResponse();
     }
 
-    public UserResponse updateUser(UserRequest body, Long id) {
+    public UserResponse updateUser(UserRequest body, String id) {
         UserEntity entity = repository.findById(id)
                 .orElseThrow();
 
@@ -97,7 +97,7 @@ public class UserService {
         return entity.toDomain().toResponse();
     }
 
-    public UserResponse replaceUser(UserRequest body, Long id) {
+    public UserResponse replaceUser(UserRequest body, String id) {
         UserEntity entity = repository.findById(id)
                 .orElseThrow();
 
@@ -111,7 +111,7 @@ public class UserService {
         return entity.toDomain().toResponse();
     }
 
-    public void delete(Long id) throws Exception {
+    public void delete(String id) {
         UserEntity entity = repository.findById(id).orElseThrow();
         userDeletedWithSuccess.increment();
         repository.delete(entity);

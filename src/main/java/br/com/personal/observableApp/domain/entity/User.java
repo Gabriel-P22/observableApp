@@ -4,7 +4,7 @@ import br.com.personal.observableApp.application.dto.UserResponse;
 
 public class User {
 
-    Long id;
+    String id;
     String name;
     String email;
     String password;
@@ -17,11 +17,11 @@ public class User {
         this.password = password;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

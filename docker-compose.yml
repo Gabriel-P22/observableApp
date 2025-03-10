@@ -10,7 +10,7 @@ networks:
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:16.0
     container_name: postgres
     restart: unless-stopped
     environment:
