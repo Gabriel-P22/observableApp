@@ -16,7 +16,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static br.com.personal.observableApp.constants.ExceptionConstants.EMAIL_ALREADY_IN_USE;
 import static br.com.personal.observableApp.constants.ExceptionConstants.USER_NOT_FOUND;
+import static br.com.personal.observableApp.constants.LogConstants.USER_CREATED;
+import static br.com.personal.observableApp.constants.LogConstants.USER_DELETED;
+import static br.com.personal.observableApp.constants.LogConstants.USER_FIND;
+import static br.com.personal.observableApp.constants.LogConstants.USER_UPDATED;
+import static br.com.personal.observableApp.constants.LogMessagesConstants.USER_CREATED_COUNT;
+import static br.com.personal.observableApp.constants.LogMessagesConstants.USER_DELETED_COUNT;
+import static br.com.personal.observableApp.constants.LogMessagesConstants.USER_FIND_COUNT;
+import static br.com.personal.observableApp.constants.LogMessagesConstants.USER_UPDATED_COUNT;
 
 @Service
 public class UserService {
@@ -31,20 +40,20 @@ public class UserService {
     public UserService(UserRepository repository, MeterRegistry registry) {
         this.repository = repository;
 
-        this.userCreateWithSuccess = Counter.builder("USER_CREATED")
-                .description("User created!")
+        this.userCreateWithSuccess = Counter.builder(USER_CREATED.name())
+                .description(USER_CREATED_COUNT.getValue())
                 .register(registry);
 
-        this.userUpdatedWithSuccess = Counter.builder("USER_UPDATED")
-                .description("User updated!")
+        this.userUpdatedWithSuccess = Counter.builder(USER_UPDATED.name())
+                .description(USER_UPDATED_COUNT.getValue())
                 .register(registry);
 
-        this.userDeletedWithSuccess = Counter.builder("USER_DELETED")
-                .description("User deleted!")
+        this.userDeletedWithSuccess = Counter.builder(USER_DELETED.name())
+                .description(USER_DELETED_COUNT.getValue())
                 .register(registry);
 
-        this.userFindWithSuccess = Counter.builder("USER_FIND")
-                .description("User find!")
+        this.userFindWithSuccess = Counter.builder(USER_FIND.name())
+                .description(USER_FIND_COUNT.getValue())
                 .register(registry);
     }
 
@@ -60,7 +69,7 @@ public class UserService {
 
             return repository.save(entity).toDomain().toResponse();
         } catch (Exception e) {
-            throw new RequestErrorException("Email already in use");
+            throw new RequestErrorException(EMAIL_ALREADY_IN_USE.name());
         }
     }
 

@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+
+import static br.com.personal.observableApp.constants.LogConstants.USER_ERRORS;
+import static br.com.personal.observableApp.constants.LogMessagesConstants.ERROR_COUNT;
 
 @ControllerAdvice
 public class GlobalException {
@@ -16,8 +18,8 @@ public class GlobalException {
     private final Counter userErrors;
 
     public GlobalException(MeterRegistry registry) {
-        this.userErrors = Counter.builder("USER_ERRORS")
-                .description("Error on user job...")
+        this.userErrors = Counter.builder(USER_ERRORS.name())
+                .description(ERROR_COUNT.getValue())
                 .register(registry);
     }
 
