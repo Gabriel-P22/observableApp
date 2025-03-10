@@ -4,10 +4,10 @@ import br.com.personal.observableApp.application.dto.UserResponse;
 
 public class User {
 
-    String id;
-    String name;
-    String email;
-    String password;
+    private String id;
+    private String name;
+    private String email;
+    private String password;
 
     public User() {}
 

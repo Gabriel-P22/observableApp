@@ -1,8 +1,8 @@
 package br.com.personal.observableApp.application.dto;
 
 public class UserResponse {
-    String name;
-    String email;
+    private String name;
+    private String email;
 
     public UserResponse() {}
 

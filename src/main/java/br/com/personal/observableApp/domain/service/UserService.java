@@ -4,6 +4,8 @@ package br.com.personal.observableApp.domain.service;
 import br.com.personal.observableApp.application.dto.UserRequest;
 import br.com.personal.observableApp.application.dto.UserResponse;
 import br.com.personal.observableApp.domain.entity.User;
+import br.com.personal.observableApp.infra.exception.RequestErrorException;
+import br.com.personal.observableApp.infra.exception.UserNotFoundException;
 import br.com.personal.observableApp.infra.persistence.user.UserEntity;
 import br.com.personal.observableApp.infra.persistence.user.UserRepository;
 import io.micrometer.core.instrument.Counter;
@@ -12,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
+import static br.com.personal.observableApp.constants.ExceptionConstants.USER_NOT_FOUND;
 
 @Service
 public class UserService {
@@ -44,15 +49,19 @@ public class UserService {
     }
 
     public UserResponse create(UserRequest body) {
-        UserEntity entity = new UserEntity(
-                body.getName(),
-                body.getEmail(),
-                body.getPassword()
-        );
+        try {
+            UserEntity entity = new UserEntity(
+                    body.getName(),
+                    body.getEmail(),
+                    body.getPassword()
+            );
 
-        userCreateWithSuccess.increment();
+            userCreateWithSuccess.increment();
 
-        return repository.save(entity).toDomain().toResponse();
+            return repository.save(entity).toDomain().toResponse();
+        } catch (Exception e) {
+            throw new RequestErrorException("Email already in use");
+        }
     }
 
     public List<UserResponse> getUserList() {
@@ -68,7 +77,8 @@ public class UserService {
     }
 
     public UserResponse getUserById(String id) {
-        UserEntity entity = repository.findById(id).orElseThrow();
+        UserEntity entity = repository.findById(id).orElseThrow(() ->
+                new UserNotFoundException(USER_NOT_FOUND.name()));
         userFindWithSuccess.increment();
 
         return entity.toDomain().toResponse();
@@ -76,7 +86,8 @@ public class UserService {
 
     public UserResponse updateUser(UserRequest body, String id) {
         UserEntity entity = repository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new UserNotFoundException(USER_NOT_FOUND.name()));
 
         if (body.getName() != null) {
             entity.setName(body.getName());
@@ -99,7 +110,8 @@ public class UserService {
 
     public UserResponse replaceUser(UserRequest body, String id) {
         UserEntity entity = repository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new UserNotFoundException(USER_NOT_FOUND.name()));
 
         entity.setName(body.getName());
         entity.setEmail(body.getEmail());
@@ -112,7 +124,10 @@ public class UserService {
     }
 
     public void delete(String id) {
-        UserEntity entity = repository.findById(id).orElseThrow();
+        UserEntity entity = repository.findById(id)
+                .orElseThrow(() ->
+                        new UserNotFoundException(USER_NOT_FOUND.name()));
+
         userDeletedWithSuccess.increment();
         repository.delete(entity);
     }

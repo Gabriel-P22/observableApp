@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -24,14 +25,8 @@ public class UserController {
 
     private final UserService service;
 
-    Counter userErrors;
-
-    public UserController(UserService service, MeterRegistry registry) {
+    public UserController(UserService service) {
         this.service = service;
-
-        this.userErrors = Counter.builder("USER_ERRORS")
-                .description("Error on user job...")
-                .register(registry);
     }
 
     @PostMapping

@@ -1,9 +1,9 @@
 package br.com.personal.observableApp.application.dto;
 
 public class UserRequest {
-    String name;
-    String email;
-    String password;
+    private String name;
+    private String email;
+    private String password;
 
     public String getName() {
         return name;
