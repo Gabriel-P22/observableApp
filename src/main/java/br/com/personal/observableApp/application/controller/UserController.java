@@ -37,25 +37,17 @@ public class UserController {
 
     @PostMapping
     ResponseEntity<UserResponse> create(@RequestBody UserRequest body) {
-        var user = service.create(body).toResponse();
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(service.create(body));
     }
 
     @GetMapping
     ResponseEntity<List<UserResponse>> getUserList() {
-        var users = service.getUserList()
-                .stream()
-                .map(User::toResponse)
-                .toList();
-
-
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(service.getUserList());
     }
 
     @GetMapping("/{id}")
     ResponseEntity<UserResponse> getUserById(@PathVariable Long id) throws Exception {
-        UserResponse user = service.getUserById(id).toResponse();
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(service.getUserById(id));
     }
 
     @PatchMapping("/{id}")
@@ -63,7 +55,7 @@ public class UserController {
             @PathVariable Long id,
             @RequestBody UserRequest body
     ) {
-        var user = service.updateUser(body, id).toResponse();
+        var user = service.updateUser(body, id);
         return ResponseEntity.ok(user);
     }
 
@@ -72,7 +64,7 @@ public class UserController {
             @PathVariable Long id,
             @RequestBody UserRequest body
     ) {
-        var user = service.replaceUser(body, id).toResponse();
+        var user = service.replaceUser(body, id);
         return ResponseEntity.ok(user);
     }
 

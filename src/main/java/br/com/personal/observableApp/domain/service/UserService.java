@@ -2,6 +2,7 @@ package br.com.personal.observableApp.domain.service;
 
 
 import br.com.personal.observableApp.application.dto.UserRequest;
+import br.com.personal.observableApp.application.dto.UserResponse;
 import br.com.personal.observableApp.domain.entity.User;
 import br.com.personal.observableApp.infra.persistence.user.UserEntity;
 import br.com.personal.observableApp.infra.persistence.user.UserRepository;
@@ -42,7 +43,7 @@ public class UserService {
                 .register(registry);
     }
 
-    public User create(UserRequest body) {
+    public UserResponse create(UserRequest body) {
         UserEntity entity = new UserEntity(
                 body.getName(),
                 body.getEmail(),
@@ -51,13 +52,14 @@ public class UserService {
 
         userCreateWithSuccess.increment();
 
-        return repository.save(entity).toDomain();
+        return repository.save(entity).toDomain().toResponse();
     }
 
-    public List<User> getUserList() {
-        List<User> entityList = repository.findAll()
+    public List<UserResponse> getUserList() {
+        List<UserResponse> entityList = repository.findAll()
                 .stream()
                 .map(UserEntity::toDomain)
+                .map(User::toResponse)
                 .toList();
 
         userFindWithSuccess.increment();
@@ -65,14 +67,14 @@ public class UserService {
         return entityList;
     }
 
-    public User getUserById(Long id) {
-        Optional<UserEntity> entity = repository.findById(id);
+    public UserResponse getUserById(Long id) {
+        UserEntity entity = repository.findById(id).orElseThrow();
         userFindWithSuccess.increment();
 
-        return entity.map(UserEntity::toDomain).orElse(null);
+        return entity.toDomain().toResponse();
     }
 
-    public User updateUser(UserRequest body, Long id) {
+    public UserResponse updateUser(UserRequest body, Long id) {
         UserEntity entity = repository.findById(id)
                 .orElseThrow();
 
@@ -92,10 +94,10 @@ public class UserService {
 
         userUpdatedWithSuccess.increment();
 
-        return entity.toDomain();
+        return entity.toDomain().toResponse();
     }
 
-    public User replaceUser(UserRequest body, Long id) {
+    public UserResponse replaceUser(UserRequest body, Long id) {
         UserEntity entity = repository.findById(id)
                 .orElseThrow();
 
@@ -106,7 +108,7 @@ public class UserService {
         repository.save(entity);
         userUpdatedWithSuccess.increment();
 
-        return entity.toDomain();
+        return entity.toDomain().toResponse();
     }
 
     public void delete(Long id) throws Exception {
