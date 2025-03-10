@@ -25,30 +25,10 @@ public class UserController {
 
     private final UserService service;
 
-    Counter userCreateWithSuccess;
-    Counter userUpdatedWithSuccess;
-    Counter userDeletedWithSuccess;
-    Counter userFindWithSuccess;
     Counter userErrors;
 
     public UserController(UserService service, MeterRegistry registry) {
         this.service = service;
-
-        this.userCreateWithSuccess = Counter.builder("USER_CREATED")
-                .description("User created!")
-                .register(registry);
-
-        this.userUpdatedWithSuccess = Counter.builder("USER_UPDATED")
-                .description("User updated!")
-                .register(registry);
-
-        this.userDeletedWithSuccess = Counter.builder("USER_DELETED")
-                .description("User deleted!")
-                .register(registry);
-
-        this.userFindWithSuccess = Counter.builder("USER_FIND")
-                .description("User find!")
-                .register(registry);
 
         this.userErrors = Counter.builder("USER_ERRORS")
                 .description("Error on user job...")
@@ -56,86 +36,51 @@ public class UserController {
     }
 
     @PostMapping
-    ResponseEntity<UserResponse> create(@RequestBody UserRequest body) throws Exception {
-        try {
-            var user = service.create(body).toResponse();
-            userCreateWithSuccess.increment();
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            userErrors.increment();
-            throw new Exception();
-        }
+    ResponseEntity<UserResponse> create(@RequestBody UserRequest body) {
+        var user = service.create(body).toResponse();
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping
-    ResponseEntity<List<UserResponse>> getUserList() throws Exception {
-        try {
-            var users = service.getUserList()
-                    .stream()
-                    .map(User::toResponse)
-                    .toList();
+    ResponseEntity<List<UserResponse>> getUserList() {
+        var users = service.getUserList()
+                .stream()
+                .map(User::toResponse)
+                .toList();
 
-            userFindWithSuccess.increment();
-            return ResponseEntity.ok(users);
-        } catch (Exception e) {
-            userErrors.increment();
-            throw new Exception();
-        }
+
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
     ResponseEntity<UserResponse> getUserById(@PathVariable Long id) throws Exception {
-        try {
-            var user = service.getUserById(id).toResponse();
-            userFindWithSuccess.increment();
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            userErrors.increment();
-            throw new Exception();
-        }
+        UserResponse user = service.getUserById(id).toResponse();
+        return ResponseEntity.ok(user);
     }
 
     @PatchMapping("/{id}")
     ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,
             @RequestBody UserRequest body
-    ) throws Exception {
-        try {
-            var user = service.updateUserString(body, id).toResponse();
-            userUpdatedWithSuccess.increment();
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            userErrors.increment();
-            throw new Exception();
-        }
+    ) {
+        var user = service.updateUser(body, id).toResponse();
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("/{id}")
     ResponseEntity<UserResponse> replaceUser(
             @PathVariable Long id,
             @RequestBody UserRequest body
-    ) throws Exception {
-        try {
-            var user = service.replaceUser(body, id).toResponse();
-            userUpdatedWithSuccess.increment();
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            userErrors.increment();
-            throw new Exception();
-        }
+    ) {
+        var user = service.replaceUser(body, id).toResponse();
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(
             @PathVariable Long id
     ) throws Exception {
-        try {
-            service.delete(id);
-            userDeletedWithSuccess.increment();
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            userErrors.increment();
-            throw new Exception();
-        }
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
